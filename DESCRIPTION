@@ -9,3 +9,4 @@ Depends: R (>= 1.9.0)
 Suggests: Biobase
 License: LGPL 
 URL: http://www.bioconductor.org
+ReleaseLevel: devel
