@@ -1,5 +1,7 @@
 @
 %\VignetteIndexEntry{ROC notes}
+%\VignetteDepends{ROC, Biobase}
+%\VignetteKeywords{ROC curves}
 %\VignettePackage{ROC}
 \documentclass{article}
 
