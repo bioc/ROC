@@ -1,6 +1,6 @@
 Package: ROC
-Version: 0.0-1
-Date: 2001-10-27
+Version: 0.0-2
+Date: 2001-10-29
 Title: utilities related to ROC computation and analysis
 Author: Vince Carey <stvjc@channing.harvard.edu>
 Depends: R (>=1.4), methods
