@@ -14,7 +14,7 @@ rocdemo.sca(truth, data, rule, seqlen=20,
 %- maybe also `usage' for other objects documented here.
 \arguments{
   \item{truth}{ binary classification of outcomes corresponding
-to the data points }
+to the data points; must take values 0, 1 only }
   \item{data}{ data on the marker }
   \item{rule}{ classification rule that applies to data to
 yield predictions }
@@ -57,10 +57,10 @@ DxII <- c(rep(0,100), rep(1,100))
 R4 <- rocdemo.sca( DxII, MII, dxrule.sca, markerLabel="Pepe+ Type II" )
 
 par(mfrow=c(2,2))
-plot(R1)
-plot(R2)
-plot(R3)
-plot(R4)
+plotrocc(R1)
+plotrocc(R2)
+plotrocc(R3)
+plotrocc(R4)
 
 }
 
