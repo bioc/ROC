@@ -2,7 +2,7 @@
 \docType{methods}
 \title{plot method for ROC curves}
 \description{plot method for ROC curves}
-\alias{plot-methods}
+\alias{plot,rocc,missing-method}
 \section{Methods}{\describe{
 \item{x = rocc, y = missing}{ plots an ROC curve object, with
 additional parameters available:
