@@ -160,13 +160,20 @@ are of interest, and that uncertainty in rankings can
 be exposed by resampling tissues.  Working with \verb+exprSet+s,
 this is easy to carry out.
 
-\begin{verbatim}
-rnkAUC <- rankSetByFn( geneDataExprSet, "pos", AUC ) # a ranking
-bootRnk <- rankDistn( geneDataExprSet, "pos", AUC, nresamp=200 )
-  # estimate the distribution of rankings over 200
-  # resamplings of tissues
-\end{verbatim}
-This yields a matrix of 200 draws from the tissue-resampling
-based distribution of gene ranks.  Each column is a draw.
+<<>>=
+nResamp <- 10
+nTiss <- ncol(exprs(eset))
+nGenes <- nrow(exprs(eset))
+out <- matrix(NA,nr=nGenes, nc=nResamp)
+set.seed(123)
+for (i in 1:nResamp)
+ {
+ TissInds <- sample(1:nTiss, size=nTiss, replace=TRUE)
+ out[,i] <- esApply( eset[,TissInds], myauc )
+ }
+
+@
+Each row of the matrix \verb+out+ is a sample from the
+bootstrap distribution of AUC ranks for the corresponding gene.
 
 \end{document}
