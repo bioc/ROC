@@ -5,11 +5,14 @@
 \alias{pAUCi}
 \alias{ROC}
 \title{ functionals of ROC curve }
-\description{various functionals of ROC curves
+\description{various functionals of ROC (Receiver Operating
+  Characteristic) curves
 }
 \usage{
 AUC(rocobj)
+AUCi(rocobj)
 pAUC(rocobj,t0)
+pAUCi(rocobj,t0)
 }
 \arguments{
   \item{rocobj}{ element of class rocc}
@@ -17,16 +20,35 @@ pAUC(rocobj,t0)
           or limit in (0,1) to integrate to}
 }
 \details{
-AUC employs trapezoidal rule.  AUCi uses integrate().
+AUC, pAUC, AUCi and pAUCi compute the Area Under the Curve.
+
+AUC and pAUC employ the trapezoidal rule.  AUCi and pAUCi use
+integrate().
+
+AUC and AUCi compute the area under the curve from 0 to 1 on the x-axis
+(i.e., the 1 - specificity axis).
+
+pAUC and pAUCi compute the are under the curve from 0 to argument t0 on
+the x-axis (i.e., the 1 - specificity axis).
+
+Elements of class rocc can be created by rocdemo.sca() or
+other constructors you might make using the code of rocdemo.sca()
+as a template.
 }
 \value{
 }
-\references{  }
-\author{  }
+\references{
+  Rosner, B., 2000, \emph{Fundamentals of Biostatistics, 5th Ed.},
+  pp. 63--65
+
+  Duda, R. O., Hart, P. E., Stork, D. G., 2001 \emph{Pattern
+    Classification, 2nd Ed.}, p. 49
+}
+\author{Vince Carey (stvjc@channing.harvard.edu)  }
 \note{  }
 
 
-\seealso{  }
+\seealso{rocdemo.sca}
 
 \examples{
 set.seed(123)
