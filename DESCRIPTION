@@ -1,9 +1,9 @@
 Package: ROC
-Version: 1.0 
+Version: 1.0.1 
 Date: 2002-04-09
 Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>
-Depends: R
+Depends: R (>= 1.5.1)
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
 Description: utilities for ROC, with uarray focus
 License: GPL2
