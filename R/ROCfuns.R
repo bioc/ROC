@@ -1,7 +1,7 @@
 .initClasses <- function (env) 
 {
 require(methods)
-require(Biobase)
+#require(Biobase)
 # ROC curve
     setClass("rocc", representation(sens = "numeric", spec = "numeric", 
         rule = "function", cuts = "numeric", markerLabel = "character", 
