@@ -21,16 +21,15 @@ distributed by Beth Atkinson of the Mayo Clinic.
 
 \subsection{{\tt rocc}: a representation of an ROC curve}
 
-ROC curves illustrate the performance of a classification
-procedure based on dichotomous interpretation of a continuous marker.
-Suppose the true state of an item is either `$+$' or `$-$'.
-The item's marker value is compared to a threshold, and the
-item is classified as positive or negative depending on
-whether the marker value is greater than or less than the 
-threshold.  For a fixed threshold $t$, the procedure has a
-sensitivity Pr(marker $\geq t$ $|$true class$=+$) and
-specificity Pr(marker $< t$ $|$true class$=-$).
-The ROC curve is the locus of values $(x, y) = (1-\mbox{spec}, \mbox{sens})$.
+ROC curves illustrate the performance of a classification procedure
+based on dichotomous interpretation of a continuous marker.  Suppose
+the true state of an item is either `$+$' or `$-$'.  The item's marker
+value is compared to a threshold, and the item is classified as
+positive or negative depending on whether the marker value is greater
+than or less than the threshold.  For a fixed threshold $t$, the
+procedure has a sensitivity Pr(marker $\geq t$ $|$true class$=+$) and
+specificity Pr(marker $< t$ $|$true class$=-$).  The ROC curve is the
+locus of values $(x, y) = (1-\mbox{spec}, \mbox{sens})$.
 
 \verb+rocc+ is an S4-style class, with slots 
 \begin{itemize}
@@ -47,29 +46,26 @@ Let's verify:
 <<>>=
 library(ROC)
 print(getClass("rocc"))
-
 @
 
-For creation of an ROC curve object (an instance of class \verb+rocc+),
-the function \verb+rocdemo.sca+ is available.  The name is chosen
-to indicate that this is a provisional definition based on a scalar
-marker.
+For creation of an ROC curve object (an instance of class
+\verb+rocc+), the function \verb+rocdemo.sca+ is available.  The name
+is chosen to indicate that this is a provisional definition based on a
+scalar marker.
 
 \verb+rocdemo.sca+ is defined as follows:
 <<>>=
 print(rocdemo.sca)
+@ 
 
-@
-The argument \verb+truth+ is the vector of actual states of the objects
-being classified, and it must be a vector of binary indicators.
-The argument \verb+data+ is the vector of marker values.  The
-argument \verb+rule+ is the classification rule.  This must
-be a function of two arguments, and the following
-is an obvious approach:
+The argument \verb+truth+ is the vector of actual states of the
+objects being classified, and it must be a vector of binary
+indicators.  The argument \verb+data+ is the vector of marker values.
+The argument \verb+rule+ is the classification rule.  This must be a
+function of two arguments, and the following is an obvious approach:
 
 <<>>=
 print(dxrule.sca)
-
 @
 
 To begin working with ROC curves in R, you can proceed as follows.
@@ -94,15 +90,13 @@ plot(roc1)
 @
 \subsection{Functionals of the ROC curve}
 
-The area under the ROC curve is well known to be equivalent
-to the numerator of the Mann-Whitney U statistic comparing
-the marker distributions among positive and negative items.
-Even if the overall area is not very large, the
-existence of threshold
-values yielding sensitivities markedly greater than
-the false positive rate can be of interest.
-The sensitivity at a false positive rate $t$ is denoted ROC($t$);
-the AUC = $\int_0^1 ROC(u)du$.  Finally, the partial AUC to
+The area under the ROC curve is well known to be equivalent to the
+numerator of the Mann-Whitney U statistic comparing the marker
+distributions among positive and negative items.  Even if the overall
+area is not very large, the existence of threshold values yielding
+sensitivities markedly greater than the false positive rate can be of
+interest.  The sensitivity at a false positive rate $t$ is denoted
+ROC($t$); the AUC = $\int_0^1 ROC(u)du$.  Finally, the partial AUC to
 a false positive rate $s$ is denoted pAUC($s$) = $\int_0^s ROC(u)du$.
 
 <<>>=
