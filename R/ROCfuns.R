@@ -73,11 +73,7 @@ function (rocobj)
 {
     x <- 1 - rocobj@spec
     y <- rocobj@sens
-    if (x[1] > x[length(x)]) {
-      x <- rev(x)
-      y <- rev(y)
-    }
-    trapezint(x, y, 0, 1)
+    trapezint(rev(x), rev(y), 0, 1)
 }
 "AUCi" <-
 function (rocobj)
@@ -101,11 +97,7 @@ function (rocobj, t0)
 {
     x <- 1 - rocobj@spec
     y <- rocobj@sens
-    if (x[1] > x[length(x)]) {
-      x <- rev(x)
-      y <- rev(y)
-    }
-    trapezint(x, y, 0, t0)
+    trapezint(rev(x), rev(y), 0, t0)
 }
 
 "pAUCi" <-
@@ -116,17 +108,12 @@ function (rocobj, t0)
 }
 
 "rocdemo.sca" <-
-function (truth, data, rule, cutpts = NA,
-    markerLabel = "unnamed marker",
+function (truth, data, rule, seqlen = min(length(truth),20), cutpts = seq(min(data),
+    max(data), length = seqlen), markerLabel = "unnamed marker",
     caseLabel = "unnamed diagnosis")
 {
     if (!all(sort(unique(truth)) == c(0, 1)))
         stop("'truth' variable must take values 0 or 1")
-    if (is.na(cutpts)) {
-      udata <- unique(sort(data))
-      delta <- min(diff(udata))/2
-      cutpts <- c(udata - delta, udata[length(udata)] + delta)
-    }
     np <- length(cutpts)
     sens <- rep(NA, np)
     spec <- rep(NA, np)

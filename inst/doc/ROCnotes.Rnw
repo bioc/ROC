@@ -78,7 +78,7 @@ To begin working with ROC curves in R, you can proceed as follows.
 set.seed(123)
 state <- c(0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1)
 markers <- c(1,2,1,1,2,3,3,4,2,1,1,3,2,3,2,4,5,2,3,4)+runif(20,-1,1)
-roc1 <- rocdemo.sca( truth=state, data=markers, rule=dxrule.sca )
+roc1 <- rocdemo.sca( truth=state, data=markers, rule=dxrule.sca, seqlen=5 )
 @
 
 @
