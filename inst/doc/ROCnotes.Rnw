@@ -1,0 +1,172 @@
+@
+\documentclass{article}
+
+
+\begin{document}
+\title{Notes on the Bioconductor {\tt ROC} library}
+\maketitle
+
+\section{Introduction}
+
+The \verb+ROC+ library is a collection of R classes
+and functions related to receiver operating characteristic (ROC)
+curves.  These functions are targeted at the use of ROC
+analysis with DNA microarrays, as discussed in work of
+MS Pepe, G Anderson and colleagues at U Washington Seattle
+Biostatistics (unpublished report).  Other open source
+software for ROC analysis in the S language has been
+distributed by Beth Atkinson of the Mayo Clinic.
+
+\section{Inventory of classes and functions}
+
+\subsection{{\tt rocc}: a representation of an ROC curve}
+
+ROC curves illustrate the performance of a classification
+procedure based on dichotomous interpretation of a continuous marker.
+Suppose the true state of an item is either `$+$' or `$-$'.
+The item's marker value is compared to a threshold, and the
+item is classified as positive or negative depending on
+whether the marker value is greater than or less than the 
+threshold.  For a fixed threshold $t$, the procedure has a
+sensitivity Pr(marker $\geq t$ $|$true class$=+$) and
+specificity Pr(marker $< t$ $|$true class$=-$).
+The ROC curve is the locus of values $(x, y) = (1-\mbox{spec}, \mbox{sens})$.
+
+\verb+rocc+ is an S4-style class, with slots 
+\begin{itemize}
+\item \verb+sens+, vector of sensitivity values
+\item \verb+spec+, vector of specificity values
+\item \verb+rule+, archival value of the rule used to classify items
+\item \verb+cuts+, vector of thresholds used
+\item \verb+markerlabel+, name of the marker 
+\item \verb+caselabel+, name of the state
+\end{itemize}
+
+Let's verify:
+
+<<>>=
+library(ROC)
+print(getClass("rocc"))
+
+@
+
+For creation of an ROC curve object (an instance of class \verb+rocc+),
+the function \verb+rocdemo.sca+ is available.  The name is chosen
+to indicate that this is a provisional definition based on a scalar
+marker.
+
+\verb+rocdemo.sca+ is defined as follows:
+<<>>=
+print(rocdemo.sca)
+
+@
+The argument \verb+truth+ is the vector of actual states of the objects
+being classified, and it must be a vector of binary indicators.
+The argument \verb+data+ is the vector of marker values.  The
+argument \verb+rule+ is the classification rule.  This must
+be a function of two arguments, and the following
+is an obvious approach:
+
+<<>>=
+print(dxrule.sca)
+
+@
+
+To begin working with ROC curves in R, you can proceed as follows.
+
+<<>>=
+set.seed(123)
+state <- c(0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1)
+markers <- c(1,2,1,1,2,3,3,4,2,1,1,3,2,3,2,4,5,2,3,4)+runif(20,-1,1)
+roc1 <- rocdemo.sca( truth=state, data=markers, rule=dxrule.sca, seqlen=5 )
+@
+
+@
+\begin{figure}
+\begin{center}
+<<fig=TRUE>>=
+plot(roc1)
+@
+\end{center}
+\caption{An example ROC curve with default plotting parameters.}
+\end{figure}
+
+@
+\subsection{Functionals of the ROC curve}
+
+The area under the ROC curve is well known to be equivalent
+to the numerator of the Mann-Whitney U statistic comparing
+the marker distributions among positive and negative items.
+Even if the overall area is not very large, the
+existence of threshold
+values yielding sensitivities markedly greater than
+the false positive rate can be of interest.
+The sensitivity at a false positive rate $t$ is denoted ROC($t$);
+the AUC = $\int_0^1 ROC(u)du$.  Finally, the partial AUC to
+a false positive rate $s$ is denoted pAUC($s$) = $\int_0^s ROC(u)du$.
+
+<<>>=
+auc <- AUC(roc1); print(auc)
+paucp4 <- pAUC(roc1,.4); print(paucp4)
+rocp3 <- ROC(roc1,.3); print(rocp3)
+
+@
+Note that the definition of the AUC uses a naive trapezoidal rule.
+This is faster than \verb+integrate+.  However, functions
+AUCi and pAUCi that use the more accurate integrate() function
+are available.
+
+<<>>=
+print(trapezint)
+
+@
+
+\subsection{Tools for working with microarrays}
+
+See the Biobase package for a discussion of the \verb+exprSet+
+class, which represents a collection of microarrays.  Given
+a dichotomous element of the \verb+phenodata+ slot/data-frame
+of an \verb+exprSet+, an ROC curve may be defined using the
+expression levels of any gene as the vector of marker values.
+
+<<>>=
+library(Biobase)
+data(eset)
+myauc <- function(x,y) {
+ dx <- pData(phenoData(y))$cov1-1
+ AUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ) )
+ }
+mypauc1 <- function(x,y) {
+ dx <- pData(phenoData(y))$cov1-1
+ pAUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ), .1 )
+ }
+
+allAUC <- esApply( eset, myauc )
+
+allpAUC1 <- esApply( eset, mypauc1 )
+
+print(geneNames(eset)[allAUC >= 
+       max(allAUC,na.rm=TRUE) & !is.na(allAUC)])
+
+print(geneNames(eset)[allpAUC1 >= 
+       max(allpAUC1,na.rm=TRUE) & !is.na(allpAUC1)])
+
+@
+
+\subsection{Inference on ROC-based rankings}
+
+Pepe et al indicate that rankings based on ROC functionals
+are of interest, and that uncertainty in rankings can
+be exposed by resampling tissues.  Working with \verb+exprSet+s,
+this is easy to carry out.
+
+\begin{verbatim}
+rnkAUC <- rankSetByFn( geneDataExprSet, "pos", AUC ) # a ranking
+bootRnk <- rankDistn( geneDataExprSet, "pos", AUC, nresamp=200 )
+  # estimate the distribution of rankings over 200
+  # resamplings of tissues
+\end{verbatim}
+This yields a matrix of 200 draws from the tissue-resampling
+based distribution of gene ranks.  Each column is a draw.
+
+\end{document}
