@@ -108,7 +108,7 @@ function (rocobj, t0)
 }
 
 "rocdemo.sca" <-
-function (truth, data, rule, seqlen = 20, cutpts = seq(min(data),
+function (truth, data, rule, seqlen = min(length(truth),20), cutpts = seq(min(data),
     max(data), length = seqlen), markerLabel = "unnamed marker",
     caseLabel = "unnamed diagnosis")
 {

@@ -8,7 +8,7 @@ using a scalar marker and simple functional rule
 }
 \usage{
 rocdemo.sca(truth, data, rule, 
-       seqlen=20, cutpts=seq(min(data), max(data), length = seqlen), 
+       seqlen=min(length(truth),20), cutpts=seq(min(data), max(data), length = seqlen), 
        markerLabel="unnamed marker", caseLabel="unnamed diagnosis")
 }
 \arguments{
