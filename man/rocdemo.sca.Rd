@@ -7,7 +7,7 @@ given a vector of known diagnoses, a vector of marker values and
 a prediction rule, evaluate the ROC curve for the rule
 }
 \usage{
-rocdemo.sca(truth, data, rule, seqlen=10, 
+rocdemo.sca(truth, data, rule, seqlen=20, 
        cutpts=seq(min(data), max(data), length = seqlen),
        markerLabel="unnamed marker", caseLabel="unnamed diagnosis")
 }
