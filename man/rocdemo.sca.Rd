@@ -33,6 +33,8 @@ an object of class \code{rocc}
 \author{ VJ Carey }
 
 \examples{
+library(methods)
+set.seed(1234)
 # note that dxrule.sca is in the package
 TR <- rbinom(300,1,.5)
 # marker Y is uninformative
