@@ -1,8 +1,9 @@
 \name{rocc-class}
 \docType{class}
 \alias{rocc-class}
-\title{Class rocc, class for representing ROC curves }
-\description{  very simple formal class for ROC curves}
+\alias{.initClasses}
+\title{Class rocc, ROC curve representation }
+\description{object representing ROC curve, typically created using rocdemo.sca }
 \section{Creating Objects}{
 \code{  new('rocc',}\cr
 \code{    sens        = ...., # Object of class numeric}\cr
@@ -14,20 +15,27 @@
 \code{  )}}
 \section{Slots}{
   \describe{
-    \item{\code{sens}:}{Object of class "numeric" vector of sensitivities
-at marker levels defined in slot cuts }
-    \item{\code{spec}:}{Object of class "numeric" vector of specificities }
-    \item{\code{rule}:}{Object of class "function" rule used to 
-decide class of instance }
-    \item{\code{cuts}:}{Object of class "numeric" marker value thresholds used to
-evaluate sensitivity and specificity }
-    \item{\code{markerLabel}:}{Object of class "character" tag naming the marker used }
-    \item{\code{caseLabel}:}{Object of class "character" tag naming the diagnosis }
+    \item{\code{sens}:}{Object of class "numeric" sensitivity values }
+    \item{\code{spec}:}{Object of class "numeric" specificity values }
+    \item{\code{rule}:}{Object of class "function" rule to classify objects }
+    \item{\code{cuts}:}{Object of class "numeric" thresholds defining curve }
+    \item{\code{markerLabel}:}{Object of class "character" name of measured marker }
+    \item{\code{caseLabel}:}{Object of class "character" name of condition }
   }
 }
 
 \section{Methods}{
-No methods defined with class "rocc" in the signature.
+  \describe{
+    \item{plot}{(rocc, missing): a plotting function with some additional parameters }
+  }
 }
+
+\examples{
+set.seed(123)
+R1 <- rocdemo.sca( rbinom(40,1,.3), rnorm(40), dxrule.sca,
+   caseLabel="new case", markerLabel="demo Marker" )
+plot( R1, show.thresh=TRUE )
+}
+
 \keyword{methods}
 
