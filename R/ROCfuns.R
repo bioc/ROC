@@ -6,7 +6,7 @@ require(Biobase)
     setClass("rocc", representation(sens = "numeric", spec = "numeric", 
         rule = "function", cuts = "numeric", markerLabel = "character", 
         caseLabel = "character"), where = env)
-    setGeneric("plot")
+    setGeneric("plot", where=env)
 
     setMethod("plot", c("rocc", "missing"), function (x, y, ...) 
     {

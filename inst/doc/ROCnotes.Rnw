@@ -132,18 +132,18 @@ expression levels of any gene as the vector of marker values.
 <<>>=
 library(Biobase)
 data(eset)
-myauc <- function(x,y) {
- dx <- pData(phenoData(y))$cov1-1
+myauc <- function(x) {
+ dx <- cov1-1 # phenoData is installed
  AUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ) )
  }
-mypauc1 <- function(x,y) {
- dx <- pData(phenoData(y))$cov1-1
+mypauc1 <- function(x) {
+ dx <- cov1-1
  pAUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ), .1 )
  }
 
-allAUC <- esApply( eset, myauc )
+allAUC <- esApply( eset, 1, myauc )
 
-allpAUC1 <- esApply( eset, mypauc1 )
+allpAUC1 <- esApply( eset, 1, mypauc1 )
 
 print(geneNames(eset)[allAUC >= 
        max(allAUC,na.rm=TRUE) & !is.na(allAUC)])
@@ -158,10 +158,11 @@ print(geneNames(eset)[allpAUC1 >=
 Pepe et al indicate that rankings based on ROC functionals
 are of interest, and that uncertainty in rankings can
 be exposed by resampling tissues.  Working with \verb+exprSet+s,
-this is easy to carry out.
+this is easy to carry out.  (We use a very small number of
+resamplings (5) to get through this in a reasonable execution time.)
 
 <<>>=
-nResamp <- 10
+nResamp <- 5 
 nTiss <- ncol(exprs(eset))
 nGenes <- nrow(exprs(eset))
 out <- matrix(NA,nr=nGenes, nc=nResamp)
@@ -169,7 +170,7 @@ set.seed(123)
 for (i in 1:nResamp)
  {
  TissInds <- sample(1:nTiss, size=nTiss, replace=TRUE)
- out[,i] <- esApply( eset[,TissInds], myauc )
+ out[,i] <- esApply( eset[,TissInds], 1, myauc )
  }
 rout <- apply(out,2,rank)
 print((1:500)[apply(rout,1,mean)>480])
