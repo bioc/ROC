@@ -1,0 +1,546 @@
+
+@
+\section{noweb archive for R package ROC}
+
+\tableofcontents
+
+<<DESCRIPTION>>=
+Package: ROC
+Version: 0.5-5
+Date: 2002-04-22
+Title: utilities for ROC, with uarray focus
+Author: Vince Carey <stvjc@channing.harvard.edu>
+Depends: R
+Maintainer: Vince Carey <stvjc@channing.harvard.edu>
+Description: utilities for ROC, with uarray focus
+License: GPL2
+URL: http://www.bioconductor.org
+@
+
+
+\section{Discussion of Pepe et al 'Selecting differentially expressed Genes from uArray experiments'}
+
+\subsection{Overview of paper}
+\begin{itemize}
+\item mainly algorithmic; informal discussions of design,
+bias potentials
+\item framework: 30 cases and 23 controls provide tissue samples
+with mRNA expression measured on glass arrays spotted with 1536
+gene clones
+\item aim is to identify differentially expressed genes
+for which protein products (or antibodies to them) can be identified
+for use in screening
+\item overexpression important: easier to detect
+new aberrant proteins than to detect absence of a protein
+\item require a substantial number of overexpressed genes
+because search for screening criterion will have lots of
+dead ends
+\item methods sketch
+\begin{itemize}
+\item ROC curves and related functionals for
+discriminating biomarker distributions among cases and controls
+\item gene-selection uncertainty measured via probability
+of lower bound on gene rank; bootstrap approach to estimation
+\item application to ovarian cancer: 5/6 top-ranking
+genes known to be related to cancer -- 3 unknown genes
+also rank highly
+\item sample size calculation -- bound the probability
+that a gene with true rank K has rank at least k
+under a certain design
+\end{itemize}
+\item caveats noted by authors
+\begin{itemize}
+\item no framework for choice of ROC functional
+\item choice of threshold $t_0$ (target false positive rate, low) 
+hard to motivate; for
+desirable small values, ROC functionals hard to evaluate
+\item selection probability estimates reported
+on the highest ranking candidates will be biased upwards
+\end{itemize}
+\item advantages noted by authors
+\begin{itemize}
+\item generic approach; transferable to protein arrays
+\item 'distribution free'; magnitudes ignored; variability
+at levels below $1 - t_0$ quantile is irrelevant
+\end{itemize}
+\item directions to pursue
+\begin{itemize}
+\item alternatives to bootstrap-based uncertainty measures
+\item adaptive selection of threshold ('discontinuities' in ROC(t))
+\item accommodation of marker measurement error and classification
+error
+\item polytomous outcome; dependent tissue samples
+\end{itemize}
+\end{itemize}
+
+
+\subsection{Source makefile for R package ROC}
+
+<<RpkgMakefile>>=
+#
+# this makefile simplifies R package development using noweb
+# basic idea 1) set up this noweb file Makefile module
+# so that PackageName and various filename variables
+# are accurate; 2) insert all the relevant source as
+# noweb nodes R/Rfunction.R, src/Cfunction.c (use doubleangle brackets=) etc.;
+# 3) bootstrap with 'notangle -t8 -R"RpkgMakefile" [packagenm.nw] > RpkgMakefile'
+# and 'gmake -f RpkgMakefile rpmake', 4) use 'rpmake edit' to edit
+# source archive, 'rpmake source' to extract source into package
+# directories, 'rpmake check' to run R CMD check, 'rpmake html' for
+# html rendering (weaving) of the noweb base
+#
+
+
+PackageName=ROC
+RSrcBasenames=ROCfuns zzz 
+RDataBasenames=
+RdBasenames=rocc-class AUC plot-methods trapezint rocc
+FCSrcnames=
+InstScriptNames=
+InstdocNames=
+# probably don't need to edit below
+#
+MakefileName=RpkgMakefile
+MakeShellName=rpmake
+#
+Dirs2Make=R src man data inst inst/doc inst/scripts inst/data inst/examples
+Dirs=R src man data inst 
+#
+NWFILE=$(PackageName:%=%.nw)
+#
+RFiles=$(RSrcBasenames:%=%.R)
+RdataFiles=$(RdataBasenames:%=%.R)
+RdFiles=$(RdBasenames:%=%.Rd)
+#
+RPaths=$(RFiles:%=R/%)
+RdataPaths=$(RdataFiles:%=data/%)
+RdPaths=$(RdFiles:%=man/%)
+FCSrcPaths=$(FCSrcnames:%=src/%)
+InstScriptPaths=$(InstScriptNames:%=inst/scripts/%)
+InstdocPaths=$(InstdocNames:%=inst/doc/%)
+#
+SuppFiles=DESCRIPTION COPYING
+
+.PHONY: status
+.SILENT: status
+
+status:
+	echo The nw file for package $(PackageName) is: $(NWFILE)
+	echo The R paths for package $(PackageName) are: $(RPaths)
+	echo The FC paths for package $(PackageName) are: $(FCSrcPaths)
+	echo The R doc paths for package $(PackageName) are: $(RdPaths)
+	echo The inst/scripts paths for package $(PackageName) are: $(InstScriptPaths)
+	echo The inst/doc paths for package $(PackageName) are: $(InstdocPaths)
+
+# the following avoids claims of circular dependencies involving %.nw.c
+%.nw:
+
+.PHONY: edit mf
+edit:
+	vi $(NWFILE)
+
+source: $(MakefileName) $(NWFILE)
+	-mkdir $(Dirs2Make)
+	gmake -f $(MakefileName) $(RPaths) $(RdPaths) $(FCSrcPaths) $(InstScriptPaths) $(InstdocPaths) $(SuppFiles)
+
+mf: $(MakefileName)
+
+$(MakefileName): $(NWFILE)
+	notangle -t8 -R"$@" $(NWFILE) > $@
+
+$(MakeShellName): $(NWFILE)
+	notangle -t8 -R"$@" $(NWFILE) > $@
+	chmod +x $(MakeShellName)
+
+html:
+	noweave -filter l2h -latex+html -index -html $(NWFILE) | htmltoc > $(PackageName).html
+
+# following rule needs to be comprehensive
+%.R %.Rd %.c %.cc %.f %.Makefile %.js %.pl %.tex %.sh %.csh %.bash %.java %.html %README: $(NWFILE)
+	notangle -t8 -R"$@" $(NWFILE) > $@
+
+COPYING: $(NWFILE)
+	notangle -t8 -R"$@" $(NWFILE) > $@
+
+DESCRIPTION: $(NWFILE)
+	notangle -t8 -R"$@" $(NWFILE) > $@
+
+.PHONY: localPack
+localPack: source
+	-rm -rf $(PackageName)
+	-mkdir $(PackageName)
+	-cp -r $(Dirs) $(SuppFiles) $(PackageName)
+	-mv COPYING $(PackageName)/inst/scripts
+	-chmod -R go-w $(PackageName)
+
+.PHONY: check
+check: source localPack
+	R CMD check $(PackageName)
+
+
+<<rpmake>>=
+gmake -fRpkgMakefile $*
+
+@
+\section{R sources}
+
+<<R/zzz.R>>=
+.First.lib <- function(libname, pkgname, where)
+ {
+ require(methods)
+ where <- match(paste("package:", pkgname, sep=""), search())
+ .initClasses(where)
+ cacheMetaData(as.environment(where))
+ }
+
+<<R/ROCfuns.R>>=
+.initClasses <- function (env) 
+{
+require(methods)
+require(Biobase)
+# ROC curve
+    setClass("rocc", representation(sens = "numeric", spec = "numeric", 
+        rule = "function", cuts = "numeric", markerLabel = "character", 
+        caseLabel = "character"), where = env)
+    setGeneric("plot", where=env)
+
+    setMethod("plot", c("rocc", "missing"), function (x, y, ...) 
+    {
+        nna <- function(x) !is.na(x)
+        object <- x
+        dots <- list(...)
+        dNames <- names(dots)
+        show.thresh <- FALSE
+        add <- FALSE
+        jit <- FALSE
+        line <- FALSE
+        if (nna(ind <- match("show.thresh", dNames))) {
+            show.thresh <- dots$show.thresh
+            dots <- dots[-ind]
+            dNames <- dNames[-ind]
+        }
+        if (nna(ind <- match("add", dNames))) {
+            add <- dots$add
+            dots <- dots[-ind]
+            dNames <- dNames[-ind]
+        }
+        if (nna(ind <- match("jit", dNames))) {
+            jit <- dots$jit
+            dots <- dots[-ind]
+            dNames <- dNames[-ind]
+        }
+        if (nna(ind <- match("line", dNames))) {
+            line <- dots$line
+            dots <- dots[-ind]
+            dNames <- dNames[-ind]
+        }
+        x <- 1 - object@spec
+        y <- object@sens
+        if (!line) {
+            if (add) {
+                if (!jit) 
+                    points(x, y, ...)
+                else points(jitter(x), jitter(y), ...)
+            }
+            else {
+                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 
+                    object@markerLabel), ylab = paste("sens:", object@caseLabel))
+                do.call("plot.default", unlist(list(knownArgs, dots), 
+                    recursive = FALSE))
+            }
+        }
+        else {
+            if (add) {
+                if (!jit) 
+                    lines(x, y, ...)
+                else lines(jitter(x), jitter(y), ...)
+            }
+            else {
+                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 
+                    object@markerLabel), ylab = paste("sens:", object@caseLabel), 
+                    type = "l")
+                do.call("plot.default", unlist(list(knownArgs, dots), 
+                    recursive = FALSE))
+            }
+        }
+        if (show.thresh) 
+            text(x, y - 0.04, as.character(round(object@cuts, 3)), 
+                cex = 0.7)
+    }, where=env)
+}
+"AUC" <-
+function (rocobj) 
+{
+    x <- 1 - rocobj@spec
+    y <- rocobj@sens
+    trapezint(rev(x), rev(y), 0, 1)
+}
+"AUCi" <-
+function (rocobj) 
+{
+    f <- function(x) ROC(rocobj, x)
+    integrate(f, 0, 1)$value
+}
+
+"ROC" <-
+function (rocobj, t0) 
+{
+    approx(1 - rocobj@spec, rocobj@sens, t0, rule = 2, ties = max)$y
+}
+
+"dxrule.sca" <-
+function (x, thresh) 
+ifelse(x > thresh, 1, 0)
+
+"pAUC" <-
+function (rocobj, t0) 
+{
+    x <- 1 - rocobj@spec
+    y <- rocobj@sens
+    trapezint(rev(x), rev(y), 0, t0)
+}
+
+"pAUCi" <-
+function (rocobj, t0) 
+{
+    f <- function(x) ROC(rocobj, x)
+    integrate(f, 0, t0)$value
+}
+
+"rocdemo.sca" <-
+function (truth, data, rule, seqlen = 20, cutpts = seq(min(data), 
+    max(data), length = seqlen), markerLabel = "unnamed marker", 
+    caseLabel = "unnamed diagnosis") 
+{
+    if (!all(sort(unique(truth)) == c(0, 1))) 
+        stop("'truth' variable must take values 0 or 1")
+    np <- length(cutpts)
+    sens <- rep(NA, np)
+    spec <- rep(NA, np)
+    for (i in 1:np) {
+        pred <- rule(data, cutpts[i])
+        sens[i] = mean(pred[truth == 1])
+        spec[i] = mean(1 - pred[truth == 0])
+    }
+    new("rocc", spec = spec, sens = sens, rule = rule, cuts = cutpts, 
+        markerLabel = markerLabel, caseLabel = caseLabel)
+}
+"rocc" <- rocdemo.sca
+
+"trapezint" <-
+function (x, y, a, b) 
+{
+    if (length(x) != length(y)) 
+        stop("length x must equal length y")
+    y <- y[x >= a & x <= b]
+    x <- x[x >= a & x <= b]
+    if (length(unique(x)) < 2) 
+        return(NA)
+    ya <- approx(x, y, a, ties = max, rule = 2)$y
+    yb <- approx(x, y, b, ties = max, rule = 2)$y
+    x <- c(a, x, b)
+    y <- c(ya, y, yb)
+    h <- diff(x)
+    lx <- length(x)
+    0.5 * sum(h * (y[-1] + y[-lx]))
+}
+
+
+@
+\section{R doc}
+
+<<man/rocc-class.Rd>>=
+\name{rocc-class}
+\docType{class}
+\alias{rocc-class}
+\alias{.initClasses}
+\title{Class rocc, ROC curve representation }
+\description{object representing ROC curve, typically created using roc }
+\section{Creating Objects}{
+\code{  new('rocc',}\cr
+\code{    sens        = ...., # Object of class numeric}\cr
+\code{    spec        = ...., # Object of class numeric}\cr
+\code{    rule        = ...., # Object of class function}\cr
+\code{    cuts        = ...., # Object of class numeric}\cr
+\code{    markerLabel = ...., # Object of class character}\cr
+\code{    caseLabel   = ...., # Object of class character}\cr
+\code{  )}}
+\section{Slots}{
+  \describe{
+    \item{\code{sens}:}{Object of class "numeric" sensitivity values }
+    \item{\code{spec}:}{Object of class "numeric" specificity values }
+    \item{\code{rule}:}{Object of class "function" rule to classify objects }
+    \item{\code{cuts}:}{Object of class "numeric" thresholds defining curve }
+    \item{\code{markerLabel}:}{Object of class "character" name of measured marker }
+    \item{\code{caseLabel}:}{Object of class "character" name of condition }
+  }
+}
+
+\section{Methods}{
+  \describe{
+    \item{plot}{(rocc, missing): a plotting function with some additional parameters }
+  }
+}
+
+\examples{
+set.seed(123)
+R1 <- rocc( rbinom(40,1,.3), rnorm(40), dxrule.sca,
+   caseLabel="new case", markerLabel="demo Marker" )
+plot( R1, show.thresh=TRUE )
+}
+
+\keyword{methods}
+
+<<man/AUC.Rd>>=
+\name{AUC}
+\alias{AUC}
+\alias{AUCi}
+\alias{pAUC}
+\alias{pAUCi}
+\alias{ROC}
+\title{ functionals of ROC curve }
+\description{various functionals of ROC curves
+}
+\usage{
+AUC(rocobj)
+pAUC(rocobj,t0)
+AUCi(rocobj)
+pAUCi(rocobj,t0)
+ROC(rocobj,t0)
+}
+\arguments{
+  \item{rocobj}{ element of class rocc}
+  \item{t0}{ FPR point at which TPR is evaluated 
+          or limit in (0,1) to integrate to}
+}
+\details{
+AUC employs trapezoidal rule.  AUCi uses integrate().
+}
+\value{numeric value of functional
+}
+\author{Vince Carey <stvjc@channing.harvard.edu>  }
+
+\examples{
+set.seed(123)
+R1 <- rocc( rbinom(40,1,.3), rnorm(40), dxrule.sca,
+   caseLabel="new case", markerLabel="demo Marker" )
+print(AUC(R1))
+print(pAUC(R1,.3))
+print(pAUCi(R1,.3))
+print(ROC(R1,.3))
+}
+\keyword{ models }
+
+<<man/plot-methods.Rd>>=
+\name{plot-methods}
+\docType{methods}
+\title{plot method for ROC curves}
+\description{plot method for ROC curves}
+\alias{plot-methods}
+\section{Methods}{\describe{
+\item{x = rocc, y = missing}{ plots an ROC curve object, with
+additional parameters available:
+ {
+ \describe{
+  \item{show.thresh (logical):}{should marker threshold values be plotted?}
+  \item{jit (logical):}{should plotted points be jittered?}
+  \item{add (logical):}{increment to current plot?}
+  \item{line (logical):}{plot points or lines?}
+}}}}}
+\examples{
+set.seed(123)
+R1 <- rocc( rbinom(40,1,.3), rnorm(40), dxrule.sca,
+   caseLabel="new case", markerLabel="demo Marker" )
+plot(R1, line=TRUE, show.thresh=TRUE)
+}
+\keyword{methods}
+
+<<man/rocc.Rd>>=
+\name{rocc}
+\alias{rocdemo.sca}
+\alias{rocc}
+\alias{dxrule.sca}
+\title{ function to build objects of class 'rocc'  }
+\description{
+'rocc' class construction
+using a scalar marker and simple functional rule
+}
+\usage{
+rocc(truth, data, rule, 
+       seqlen=20, cutpts=seq(min(data), max(data), length = seqlen), 
+       markerLabel="unnamed marker", caseLabel="unnamed diagnosis")
+dxrule.sca( x, thresh )
+}
+\arguments{
+  \item{truth}{ true classification of objects}
+  \item{data}{ quantitative markers used to classify}
+  \item{rule}{ rule: a function with arguments}
+  \item{seqlen}{ number of thresholds x (vector of marker
+values) and thresh (threshold at which object bearing
+higher marker value is labeled as positive)}
+  \item{cutpts}{ values of thresholds}
+  \item{markerLabel}{ textual label describing marker}
+  \item{caseLabel}{ textual label describing classification}
+  \item{x}{vector of continuous markers}
+  \item{thresh}{scalar threshold for marker values: test i is positive iff
+x[i] > thresh}
+}
+\details{
+
+dxrule.sca is function (x, thresh) ifelse(x > thresh, 1, 0)
+
+}
+\value{
+an object of S4 class rocc
+}
+\author{Vince Carey <stvjc@channing.harvard.edu>  }
+
+\examples{
+set.seed(123)
+R1 <- rocc( rbinom(40,1,.3), rnorm(40), dxrule.sca,
+   caseLabel="new case", markerLabel="demo Marker" )
+plot(R1, line=TRUE, show.thresh=TRUE)
+}
+\keyword{ models }
+
+<<man/trapezint.Rd>>=
+\name{trapezint}
+\alias{trapezint}
+\title{trapezoidal rule for AUC  }
+\description{trapezoidal rule for AUC
+}
+\usage{
+trapezint(x, y, a, b)
+}
+\arguments{
+  \item{x}{ x - abscissae}
+  \item{y}{ y - ordinates}
+  \item{a}{ a - lower limit of integration}
+  \item{b}{ b - upper limit of integration}
+}
+\details{
+uses approx
+}
+\value{
+estimated AUC
+}
+\author{Vince Carey <stvjc@channing.harvard.edu>  }
+\examples{
+x <- sort(runif(30))
+y <- sin(x)
+print(trapezint(x,y,0,1))
+}
+\keyword{ models }
+
+@
+\section{C and Fortran etc. sources}
+
+
+@
+\section{Associated scripts}
+
+@
+\section{Associated non-R docs}
+
+<<COPYING>>=
+GPL2
