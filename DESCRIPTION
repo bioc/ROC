@@ -5,5 +5,6 @@ Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
 Description: utilities for ROC, with uarray focus
+Depends: R (>= 1.9.0)
 License: LGPL 
 URL: http://www.bioconductor.org
