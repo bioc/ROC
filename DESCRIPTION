@@ -1,6 +1,6 @@
 Package: ROC
-Version: 1.0.12
-Date: 2004-04-15
+Version: 1.0.13
+Date: 2004-10-26
 Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
