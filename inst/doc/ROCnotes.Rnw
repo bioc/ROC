@@ -174,11 +174,11 @@ for (i in 1:nResamp)
  out[,i] <- esApply( eset[1:50,TissInds], 1, myauc )
  }
 rout <- apply(out,2,rank)
-
-#i cannot fathom why the following gives
+# 
+#File /misc/homes/stvjc/madman/Rpacks/ROC.Rcheck/ROC/doc/ROCnotes.R :
 #Error in print.default((1:50)[apply(rout, 1, mean) > 35]) :
 #        can not set length of non-vector
-print((1:50)[apply(rout,1,mean)>35])
+#print((1:50)[apply(rout,1,mean)>35])
 
 @
 Each row of the matrix \verb+rout+ is a sample from the
