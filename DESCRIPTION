@@ -1,0 +1,11 @@
+Package: ROC
+Version: 1.0.11
+Date: 2004-04-15
+Title: utilities for ROC, with uarray focus
+Author: Vince Carey <stvjc@channing.harvard.edu>
+Maintainer: Vince Carey <stvjc@channing.harvard.edu>
+Description: utilities for ROC, with uarray focus
+Depends: R (>= 1.9.0)
+Suggests: Biobase
+License: LGPL 
+URL: http://www.bioconductor.org
