@@ -7,7 +7,7 @@
  if((.Platform$OS.type == "windows") && ("Biobase" %in% installed.packages()[,"Package"])
     && (interactive()) && (.Platform$GUI ==  "Rgui")){
      if (require("Biobase"))
-         addVigs2WinMenu("Ruuid")
+         addVigs2WinMenu("ROC")
  }
 
 }
