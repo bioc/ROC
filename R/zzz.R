@@ -2,7 +2,6 @@
  {
  require(methods)
  where <- match(paste("package:", pkgname, sep=""), search())
- .initClasses(where)
  cacheMetaData(as.environment(where))
  }
 

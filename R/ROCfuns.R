@@ -1,14 +1,10 @@
-.initClasses <- function (env) 
-{
-require(methods)
-#require(Biobase)
 # ROC curve
-    setClass("rocc", representation(sens = "numeric", spec = "numeric", 
-        rule = "function", cuts = "numeric", markerLabel = "character", 
-        caseLabel = "character"), where = env)
-    setGeneric("plot", where=env)
+    setClass("rocc", representation(sens = "numeric", spec = "numeric",
+        rule = "function", cuts = "numeric", markerLabel = "character",
+        caseLabel = "character"))
+    setGeneric("plot")
 
-    setMethod("plot", c("rocc", "missing"), function (x, y, ...) 
+    setMethod("plot", c("rocc", "missing"), function (x, y, ...)
     {
         nna <- function(x) !is.na(x)
         object <- x
@@ -42,62 +38,62 @@ require(methods)
         y <- object@sens
         if (!line) {
             if (add) {
-                if (!jit) 
+                if (!jit)
                     points(x, y, ...)
                 else points(jitter(x), jitter(y), ...)
             }
             else {
-                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 
+                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:",
                     object@markerLabel), ylab = paste("sens:", object@caseLabel))
-                do.call("plot.default", unlist(list(knownArgs, dots), 
+                do.call("plot.default", unlist(list(knownArgs, dots),
                     recursive = FALSE))
             }
         }
         else {
             if (add) {
-                if (!jit) 
+                if (!jit)
                     lines(x, y, ...)
                 else lines(jitter(x), jitter(y), ...)
             }
             else {
-                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 
-                    object@markerLabel), ylab = paste("sens:", object@caseLabel), 
+                knownArgs <- list(x = x, y = y, xlab = paste("1-spec:",
+                    object@markerLabel), ylab = paste("sens:", object@caseLabel),
                     type = "l")
-                do.call("plot.default", unlist(list(knownArgs, dots), 
+                do.call("plot.default", unlist(list(knownArgs, dots),
                     recursive = FALSE))
             }
         }
-        if (show.thresh) 
-            text(x, y - 0.04, as.character(round(object@cuts, 3)), 
+        if (show.thresh)
+            text(x, y - 0.04, as.character(round(object@cuts, 3)),
                 cex = 0.7)
-    }, where=env)
-}
+    })
+
 "AUC" <-
-function (rocobj) 
+function (rocobj)
 {
     x <- 1 - rocobj@spec
     y <- rocobj@sens
     trapezint(rev(x), rev(y), 0, 1)
 }
 "AUCi" <-
-function (rocobj) 
+function (rocobj)
 {
     f <- function(x) ROC(rocobj, x)
     integrate(f, 0, 1)$value
 }
 
 "ROC" <-
-function (rocobj, t0) 
+function (rocobj, t0)
 {
     approx(1 - rocobj@spec, rocobj@sens, t0, rule = 2, ties = max)$y
 }
 
 "dxrule.sca" <-
-function (x, thresh) 
+function (x, thresh)
 ifelse(x > thresh, 1, 0)
 
 "pAUC" <-
-function (rocobj, t0) 
+function (rocobj, t0)
 {
     x <- 1 - rocobj@spec
     y <- rocobj@sens
@@ -105,18 +101,18 @@ function (rocobj, t0)
 }
 
 "pAUCi" <-
-function (rocobj, t0) 
+function (rocobj, t0)
 {
     f <- function(x) ROC(rocobj, x)
     integrate(f, 0, t0)$value
 }
 
 "rocdemo.sca" <-
-function (truth, data, rule, seqlen = 20, cutpts = seq(min(data), 
-    max(data), length = seqlen), markerLabel = "unnamed marker", 
-    caseLabel = "unnamed diagnosis") 
+function (truth, data, rule, seqlen = 20, cutpts = seq(min(data),
+    max(data), length = seqlen), markerLabel = "unnamed marker",
+    caseLabel = "unnamed diagnosis")
 {
-    if (!all(sort(unique(truth)) == c(0, 1))) 
+    if (!all(sort(unique(truth)) == c(0, 1)))
         stop("'truth' variable must take values 0 or 1")
     np <- length(cutpts)
     sens <- rep(NA, np)
@@ -126,18 +122,18 @@ function (truth, data, rule, seqlen = 20, cutpts = seq(min(data),
         sens[i] = mean(pred[truth == 1])
         spec[i] = mean(1 - pred[truth == 0])
     }
-    new("rocc", spec = spec, sens = sens, rule = rule, cuts = cutpts, 
+    new("rocc", spec = spec, sens = sens, rule = rule, cuts = cutpts,
         markerLabel = markerLabel, caseLabel = caseLabel)
 }
 
 "trapezint" <-
-function (x, y, a, b) 
+function (x, y, a, b)
 {
-    if (length(x) != length(y)) 
+    if (length(x) != length(y))
         stop("length x must equal length y")
     y <- y[x >= a & x <= b]
     x <- x[x >= a & x <= b]
-    if (length(unique(x)) < 2) 
+    if (length(unique(x)) < 2)
         return(NA)
     ya <- approx(x, y, a, ties = max, rule = 2)$y
     yb <- approx(x, y, b, ties = max, rule = 2)$y
