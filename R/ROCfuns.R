@@ -43,8 +43,8 @@ require(Biobase)
         if (!line) {
             if (add) {
                 if (!jit) 
-                    points(x, y)
-                else points(jitter(x), jitter(y))
+                    points(x, y, ...)
+                else points(jitter(x), jitter(y), ...)
             }
             else {
                 knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 
@@ -56,8 +56,8 @@ require(Biobase)
         else {
             if (add) {
                 if (!jit) 
-                    lines(x, y)
-                else lines(jitter(x), jitter(y))
+                    lines(x, y, ...)
+                else lines(jitter(x), jitter(y), ...)
             }
             else {
                 knownArgs <- list(x = x, y = y, xlab = paste("1-spec:", 

@@ -1,6 +1,6 @@
 Package: ROC
-Version: 0.5-3
-Date: 2002-02-07
+Version: 0.5-4
+Date: 2002-03-25
 Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>
 Depends: R
