@@ -1,4 +1,3 @@
-
 .First.lib <- function(libname, pkgname, where)
  { require(methods)
   if(missing(where)) {
@@ -11,3 +10,4 @@
     }
    .initClasses(where)
 }
+
