@@ -1,4 +1,5 @@
 @
+%\VignetteIndexEntry{ROC notes}
 \documentclass{article}
 
 
