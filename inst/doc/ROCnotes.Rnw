@@ -174,7 +174,7 @@ for (i in 1:nResamp)
  out[,i] <- esApply( eset[1:50,TissInds], 1, myauc )
  }
 rout <- apply(out,2,rank)
-print((1:500)[apply(rout,1,mean)>480])
+print((1:50)[apply(rout,1,mean)>480])
 
 @
 Each row of the matrix \verb+rout+ is a sample from the
