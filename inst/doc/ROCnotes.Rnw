@@ -123,6 +123,9 @@ a dichotomous element of the \verb+phenodata+ slot/data-frame
 of an \verb+exprSet+, an ROC curve may be defined using the
 expression levels of any gene as the vector of marker values.
 
+We confine activities to the first 50 genes in eset so that
+this vignette is computable in reasonable CPU time.
+
 <<>>=
 library(Biobase)
 data(eset)
@@ -135,14 +138,14 @@ mypauc1 <- function(x) {
  pAUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ), .1 )
  }
 
-allAUC <- esApply( eset, 1, myauc )
+allAUC <- esApply( eset[1:50,], 1, myauc )
 
-allpAUC1 <- esApply( eset, 1, mypauc1 )
+allpAUC1 <- esApply( eset[1:50,], 1, mypauc1 )
 
-print(geneNames(eset)[allAUC >= 
+print(geneNames(eset[1:50,])[allAUC >= 
        max(allAUC,na.rm=TRUE) & !is.na(allAUC)])
 
-print(geneNames(eset)[allpAUC1 >= 
+print(geneNames(eset[1:50,])[allpAUC1 >= 
        max(allpAUC1,na.rm=TRUE) & !is.na(allpAUC1)])
 
 @
@@ -158,13 +161,13 @@ resamplings (5) to get through this in a reasonable execution time.)
 <<>>=
 nResamp <- 5 
 nTiss <- ncol(exprs(eset))
-nGenes <- nrow(exprs(eset))
+nGenes <- nrow(exprs(eset[1:50,]))
 out <- matrix(NA,nr=nGenes, nc=nResamp)
 set.seed(123)
 for (i in 1:nResamp)
  {
  TissInds <- sample(1:nTiss, size=nTiss, replace=TRUE)
- out[,i] <- esApply( eset[,TissInds], 1, myauc )
+ out[,i] <- esApply( eset[1:50,TissInds], 1, myauc )
  }
 rout <- apply(out,2,rank)
 print((1:500)[apply(rout,1,mean)>480])
