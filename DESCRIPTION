@@ -1,11 +1,10 @@
 Package: ROC
-Version: 0.0-7
-Date: 2001-11-15
+Version: 0.5-0
+Date: 2001-11-27
 Title: utilities related to ROC computation and analysis
 Author: Vince Carey <stvjc@channing.harvard.edu>
-Depends: R (>= 1.4), methods
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
-Description: ROC methods with some temporary material for uarrays
+Description: ROC methods tailored for uarrays
 License: GPL2
 URL: http://hydra.dfci.harvard.edu/~bioconductor
 
