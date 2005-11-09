@@ -1,0 +1,7 @@
+importFrom(graphics, plot)
+
+exportClasses(rocc)
+
+exportMethods(plot)
+
+export(AUC, AUCi, dxrule.sca, pAUC, pAUCi, ROC, rocdemo.sca, trapezint)
