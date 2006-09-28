@@ -7,14 +7,16 @@ rocdemo.sca -- demonstrate 'rocc' class construction
 using a scalar marker and simple functional rule
 }
 \usage{
-rocdemo.sca(truth, data, rule, 
+rocdemo.sca(truth, data, rule=NULL, 
        cutpts=NA,
        markerLabel="unnamed marker", caseLabel="unnamed diagnosis")
 }
 \arguments{
   \item{truth}{ true classification of objects. Must take values 0 or 1.}
   \item{data}{ quantitative markers used to classify}
-  \item{rule}{ rule: a function with arguments (x, thresh) returning 0 or 1}
+  \item{rule}{ rule: a function with arguments (x, thresh) returning 0
+    or 1. If no rule is provided the standard rule \code{dxrule.sca} is
+    assumed and a faster implementation utilized.}
   \item{cutpts}{ values of thresholds}
   \item{markerLabel}{ textual label describing marker}
   \item{caseLabel}{ textual label describing classification}
@@ -39,8 +41,7 @@ an object of S4 class rocc
 
 \examples{
 set.seed(123)
-R1 <- rocdemo.sca( rbinom(40,1,.3), rnorm(40), dxrule.sca,
-   caseLabel="new case", markerLabel="demo Marker" )
+R1 <- rocdemo.sca( rbinom(40,1,.3), rnorm(40), caseLabel="new case", markerLabel="demo Marker" )
 plot(R1, line=TRUE, show.thresh=TRUE)
 
 truth <- c(0, 1, 0, 1, 1, 0, 1, 1)

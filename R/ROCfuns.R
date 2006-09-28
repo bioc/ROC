@@ -115,28 +115,39 @@ function (rocobj, t0)
     integrate(f, 0, t0)$value
 }
 
-"rocdemo.sca" <-
-function (truth, data, rule, cutpts = NA,
-    markerLabel = "unnamed marker",
-    caseLabel = "unnamed diagnosis")
-{
-    if (!all(sort(unique(truth)) == c(0, 1)))
-        stop("'truth' variable must take values 0 or 1")
-    if (is.na(cutpts)) {
-      udata <- unique(sort(data))
-      delta <- min(diff(udata))/2
-      cutpts <- c(udata - delta, udata[length(udata)] + delta)
-    }
-    np <- length(cutpts)
+"rocdemo.sca" <-   function (truth, data, rule=NULL, cutpts = NA,
+                             markerLabel = "unnamed marker",
+                             caseLabel = "unnamed diagnosis") {
+  if (!all(sort(unique(truth)) == c(0, 1)))
+    stop("'truth' variable must take values 0 or 1")
+  if (is.na(cutpts)) {
+    udata <- unique(sort(data))
+    delta <- min(diff(udata))/2
+    cutpts <- c(udata - delta, udata[length(udata)] + delta)
+  }
+  np <- length(cutpts)
+  ## if rule is not given, assume dxrule.sca and use the faster C implementation
+  if(is.null(rule)) {
+    rocResult <- .C("ROC", as.integer(truth), as.double(data), as.double(cutpts),
+                    as.integer(length(truth)),
+                    as.integer(length(cutpts)),
+                    spec=double(np), sens=double(np), PACKAGE="ROC")
+    spec <- rocResult$spec
+    sens <- rocResult$sens
+    rule <- dxrule.sca
+  }
+  ## is user provided a rule, use the classical R implementation
+  else {
     sens <- rep(NA, np)
     spec <- rep(NA, np)
     for (i in 1:np) {
-        pred <- rule(data, cutpts[i])
-        sens[i] = mean(pred[truth == 1])
-        spec[i] = mean(1 - pred[truth == 0])
+      pred <- rule(data, cutpts[i])
+      sens[i] = mean(pred[truth == 1])
+      spec[i] = mean(1 - pred[truth == 0])
     }
-    new("rocc", spec = spec, sens = sens, rule = rule, cuts = cutpts,
-        markerLabel = markerLabel, caseLabel = caseLabel)
+  }
+  new("rocc", spec = spec, sens = sens, rule = rule, cuts = cutpts,
+      markerLabel = markerLabel, caseLabel = caseLabel)
 }
 
 "trapezint" <-

@@ -1,5 +1,7 @@
 import("methods")
 
+useDynLib(ROC)
+
 importFrom(graphics, plot)
 
 exportClasses(rocc)
