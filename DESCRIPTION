@@ -10,5 +10,5 @@ Depends: R (>= 1.9.0), utils, methods
 Suggests: Biobase
 License: LGPL
 URL: http://www.bioconductor.org
-SaveImage: Yes
+LazyLoad: Yes
 
