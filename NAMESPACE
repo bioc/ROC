@@ -3,9 +3,11 @@ import("methods")
 useDynLib(ROC)
 
 importFrom(graphics, plot)
+importFrom(graphics, points)
+importFrom(graphics, lines)
 
 exportClasses(rocc)
 
-exportMethods(plot)
+exportMethods(plot, points, lines)
 
 export(AUC, AUCi, dxrule.sca, pAUC, pAUCi, ROC, rocdemo.sca, trapezint)
