@@ -1,10 +1,12 @@
 /* Calculate sensitivity and specificity of a statistic compared to a
    TRUTH vector.
 
-   Author: Henning Redestig <redestig[at]mpimp-golm.mpg.de
+   Author: Henning Redestig <redestig[at]mpimp-golm.mpg.de / ANSI C
+   emendations by Paul Gordon of U Calgary
  */
 
 extern "C" {
+  #include <R.h>
   // truth -- the truth to compare with
   // data -- the statistic to evaluate
   // cutpts -- the cutpoints to use
@@ -15,10 +17,12 @@ extern "C" {
   void ROC (int *truth, double *data, double *cutpts, 
 	    int *nt, int *nc, double *spec, double *sens) {
 
-    int pred [*nt];
+    int *pred;
     double sensMean;
     double specMean;
     int positives = 0;
+
+    pred = (int *) Calloc(*nt, int);
 
     // total amount of positive outcomes
     for(int i = 0; i < *nt; i++) {
@@ -53,6 +57,7 @@ extern "C" {
       sens[i] = sensMean / positives;
       spec[i] = specMean / (*nt - positives);
     }
+    Free(pred);
   }
 
 } // extern "C"
