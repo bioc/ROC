@@ -121,36 +121,36 @@ print(trapezint)
 
 \subsection{Tools for working with microarrays}
 
-See the Biobase package for a discussion of the \verb+exprSet+
-class, which represents a collection of microarrays.  Given
-a dichotomous element of the \verb+phenodata+ slot/data-frame
-of an \verb+exprSet+, an ROC curve may be defined using the
-expression levels of any gene as the vector of marker values.
+See the Biobase package for a discussion of the
+\verb+ExpressionSet+ class, which represents a collection of
+microarrays.  Given a dichotomous element from the
+\verb+phenoData+ slot, an AnnotatedDataFrame, of an
+\verb+ExpressionSet+ object, an ROC curve may be defined using
+the expression levels of any gene as the vector of marker values.
 
-We confine activities to the first 50 genes in eset so that
-this vignette is computable in reasonable CPU time.
+We confine activities to the first 50 genes in
+sample.ExpressionSet so that this vignette is computable in
+reasonable CPU time.
 
 <<>>=
 library(Biobase)
-data(eset)
+data(sample.ExpressionSet)
 myauc <- function(x) {
- dx <- cov1-1 # phenoData is installed
+ dx <- as.numeric(sex) - 1 # phenoData is installed
  AUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ) )
  }
 mypauc1 <- function(x) {
- dx <- cov1-1
+ dx <- as.numeric(sex) - 1
  pAUC( rocdemo.sca( truth=dx, data=x, rule=dxrule.sca ), .1 )
  }
 
-allAUC <- esApply( eset[1:50,], 1, myauc )
+allAUC <- esApply( sample.ExpressionSet[1:50,], 1, myauc )
 
-allpAUC1 <- esApply( eset[1:50,], 1, mypauc1 )
+allpAUC1 <- esApply( sample.ExpressionSet[1:50,], 1, mypauc1 )
 
-print(geneNames(eset[1:50,])[allAUC >= 
-       max(allAUC,na.rm=TRUE) & !is.na(allAUC)])
+print(featureNames(sample.ExpressionSet[1:50,])[order(allAUC, decreasing = TRUE)[1]])
 
-print(geneNames(eset[1:50,])[allpAUC1 >= 
-       max(allpAUC1,na.rm=TRUE) & !is.na(allpAUC1)])
+print(featureNames(sample.ExpressionSet[1:50,])[order(allpAUC1, decreasing = TRUE)[1]])
 
 @
 
@@ -158,26 +158,23 @@ print(geneNames(eset[1:50,])[allpAUC1 >=
 
 Pepe et al indicate that rankings based on ROC functionals
 are of interest, and that uncertainty in rankings can
-be exposed by resampling tissues.  Working with \verb+exprSet+s,
-this is easy to carry out.  (We use a very small number of
-resamplings (5) to get through this in a reasonable execution time.)
+be exposed by resampling tissues.  Working with
+\verb+ExpressionSet+s, this is easy to carry out.  (We use
+a very small number of resamplings (5) to get through this
+in a reasonable execution time.)
 
 <<>>=
-print("code commented out owing to odd CHECK error")
-print("will run in an interactive session")
-if (FALSE) { # bug?
-nResamp <- 5 
-nTiss <- ncol(exprs(eset))
-nGenes <- nrow(exprs(eset[1:50,]))
+nResamp <- 5
+nTiss <- ncol(exprs(sample.ExpressionSet))
+nGenes <- nrow(exprs(sample.ExpressionSet[1:50,]))
 out <- matrix(NA,nr=nGenes, nc=nResamp)
 set.seed(123)
 for (i in 1:nResamp)
  {
  TissInds <- sample(1:nTiss, size=nTiss, replace=TRUE)
- out[,i] <- esApply( eset[1:50,TissInds], 1, myauc )
+ out[,i] <- esApply( sample.ExpressionSet[1:50,TissInds], 1, myauc )
  }
 rout <- apply(out,2,rank)
-}
 
 @
 Each row of the matrix \verb+rout+ is a sample from the
