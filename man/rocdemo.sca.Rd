@@ -15,22 +15,23 @@ rocdemo.sca(truth, data, rule=NULL,
   \item{truth}{ true classification of objects. Must take values 0 or 1.}
   \item{data}{ quantitative markers used to classify}
   \item{rule}{ rule: a function with arguments (x, thresh) returning 0
-    or 1. If no rule is provided the standard rule \code{dxrule.sca} is
-    assumed and a faster implementation utilized.}
+    or 1. If no rule is provided or the standard rule \code{dxrule.sca} is
+passed,
+    a faster C-based implementation is used to compute sensitivity and specificity.}
   \item{cutpts}{ values of thresholds}
   \item{markerLabel}{ textual label describing marker}
   \item{caseLabel}{ textual label describing classification}
 }
 \details{
 
-  dxrule.sca is function (x, thresh) ifelse(x > thresh, 1, 0)
+  \code{dxrule.sca} is \code{function (x, thresh) ifelse(x > thresh, 1, 0)}
 
   The default value of argument cutpts is a point less than min(data), points
   separating the unique values of data and a point greater than max(data).
 
 }
 \value{
-an object of S4 class rocc
+an object of S4 class \code{rocc}
 }
 \references{  }
 \author{Vince Carey (stvjc@channing.harvard.edu)  }

@@ -172,8 +172,9 @@ function (rocobj, t0)
     cutpts <- c(udata - delta, udata[length(udata)] + delta)
   }
   np <- length(cutpts)
-  ## if rule is not given, assume dxrule.sca and use the faster C implementation
-  if(is.null(rule)) {
+  ## if rule is not given or is dxrule.sca use the faster C implementation
+  if(is.null(rule) | isTRUE(all.equal(rule,dxrule.sca))) {
+    if (options()$verbose) cat("verbose: using C.\n")
     rocResult <- .C("ROC", as.integer(truth), as.double(data), as.double(cutpts),
                     as.integer(length(truth)),
                     as.integer(length(cutpts)),
