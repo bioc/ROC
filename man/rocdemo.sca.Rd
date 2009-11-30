@@ -51,6 +51,20 @@ R2 <- rocdemo.sca(truth, data, dxrule.sca)
 plot(R2, line=TRUE, show.thresh=TRUE)
 R3 <- rocdemo.sca(truth, data, function(x, thresh) 1 - dxrule.sca(x, thresh))
 if (AUC(R2) + AUC(R3) != 1) stop('Sum of AUCs should be 1.')
+#
+# more involved
+#
+set.seed(1234)
+x = runif(1000)
+w = runif(1000)
+z = rbinom(1000, 1, plogis(-2.7+6.2*x + .3*w))
+m1 = glm(z~x, fam=binomial)
+demorule.glm.clo = function(model) function(w,thresh)
+ ifelse(predict(model, newdata=list(x=w), type="response")>thresh, 1, 0)
+demorule.glm = demorule.glm.clo(m1)
+R4 = rocdemo.sca(z, x, demorule.glm )
+plot(R4)
+  
 }
 \keyword{ models }
 
