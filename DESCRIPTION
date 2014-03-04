@@ -1,14 +1,13 @@
 Package: ROC
-Version: 1.39.1
+Version: 1.39.2
 Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>, Henning Redestig for
-	C++ language enhancements
+        C++ language enhancements
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
 Description: utilities for ROC, with uarray focus
-biocViews: Bioinformatics, DifferentialExpression
 Depends: R (>= 1.9.0), utils, methods
 Suggests: Biobase
 License: Artistic-2.0
 URL: http://www.bioconductor.org
 LazyLoad: Yes
-
+biocViews: DifferentialExpression
