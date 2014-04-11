@@ -1,5 +1,5 @@
 Package: ROC
-Version: 1.39.2
+Version: 1.40.0
 Title: utilities for ROC, with uarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>, Henning Redestig for
         C++ language enhancements
