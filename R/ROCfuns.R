@@ -166,7 +166,8 @@ function (rocobj, t0)
                              caseLabel = "unnamed diagnosis") {
   if (!all(sort(unique(truth)) == c(0, 1)))
     stop("'truth' variable must take values 0 or 1")
-  if (is.na(cutpts)) {
+  if (any(is.na(cutpts))) {
+    message("NA in cutpts forces recomputation using smallest gap")
     udata <- unique(sort(data))
     delta <- min(diff(udata))/2
     cutpts <- c(udata - delta, udata[length(udata)] + delta)

@@ -18,7 +18,9 @@ rocdemo.sca(truth, data, rule=NULL,
     or 1. If no rule is provided or the standard rule \code{dxrule.sca} is
 passed,
     a faster C-based implementation is used to compute sensitivity and specificity.}
-  \item{cutpts}{ values of thresholds}
+  \item{cutpts}{ values of thresholds; no NA allowed, or they
+    will be recomputed using smallest gap between data points with
+    distinct values}
   \item{markerLabel}{ textual label describing marker}
   \item{caseLabel}{ textual label describing classification}
 }
