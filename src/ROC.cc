@@ -5,8 +5,9 @@
    emendations by Paul Gordon of U Calgary
  */
 
+#include <R.h>  /* moved out of extern; thanks to report from BDRipley */
+
 extern "C" {
-  #include <R.h>
   // truth -- the truth to compare with
   // data -- the statistic to evaluate
   // cutpts -- the cutpoints to use
