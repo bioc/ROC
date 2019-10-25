@@ -9,7 +9,8 @@ using a scalar marker and simple functional rule
 \usage{
 rocdemo.sca(truth, data, rule=NULL, 
        cutpts=NA,
-       markerLabel="unnamed marker", caseLabel="unnamed diagnosis")
+       markerLabel="unnamed marker", caseLabel="unnamed diagnosis",
+       quiet=TRUE)
 }
 \arguments{
   \item{truth}{ true classification of objects. Must take values 0 or 1.}
@@ -23,6 +24,7 @@ passed,
     distinct values}
   \item{markerLabel}{ textual label describing marker}
   \item{caseLabel}{ textual label describing classification}
+  \item{quiet}{ defaults to TRUE, suppressing message about discovery of NA in cutpts}
 }
 \details{
 
