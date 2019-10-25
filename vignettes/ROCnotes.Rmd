@@ -1,14 +1,18 @@
-@
-%\VignetteIndexEntry{ROC notes}
-%\VignetteDepends{ROC, Biobase}
-%\VignetteKeywords{ROC curves}
-%\VignettePackage{ROC}
-\documentclass{article}
-
-
-\begin{document}
-\title{Notes on the Bioconductor {\tt ROC} library}
-\maketitle
+---
+title: "Notes on ROC package"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Notes on ROC package}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes 
+    theme: united
+    toc: yes 
+---
 
 \section{Introduction}
 
