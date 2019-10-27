@@ -1,4 +1,8 @@
 import("methods")
+import("knitr")
+importFrom("graphics", "text")
+importFrom("stats", "approx", "integrate")
+
 
 useDynLib(ROC)
 

@@ -1,11 +1,12 @@
 Package: ROC
-Version: 1.61.2
-Title: utilities for ROC, with uarray focus
+Version: 1.61.3
+Title: utilities for ROC, with microarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>, Henning Redestig for
         C++ language enhancements
 Maintainer: Vince Carey <stvjc@channing.harvard.edu>
-Description: utilities for ROC, with uarray focus
+Description: Provide utilities for ROC, with microarray focus.
 Depends: R (>= 1.9.0), utils, methods
+Imports: knitr
 Suggests: Biobase
 License: Artistic-2.0
 URL: http://www.bioconductor.org
