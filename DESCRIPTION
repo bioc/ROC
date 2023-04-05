@@ -1,5 +1,5 @@
 Package: ROC
-Version: 1.75.0
+Version: 1.75.1
 Title: utilities for ROC, with microarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>, Henning Redestig for
         C++ language enhancements
@@ -9,7 +9,8 @@ Depends: R (>= 1.9.0), utils, methods
 Imports: knitr
 Suggests: 
     rmarkdown,
-    Biobase
+    Biobase,
+    BiocStyle
 License: Artistic-2.0
 URL: http://www.bioconductor.org
 LazyLoad: Yes
