@@ -1,5 +1,5 @@
 Package: ROC
-Version: 1.80.0
+Version: 1.81.0
 Title: utilities for ROC, with microarray focus
 Author: Vince Carey <stvjc@channing.harvard.edu>, Henning Redestig for
         C++ language enhancements
