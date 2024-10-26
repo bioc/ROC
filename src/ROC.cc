@@ -23,7 +23,7 @@ extern "C" {
     double specMean;
     int positives = 0;
 
-    pred = (int *) Calloc(*nt, int);
+    pred = (int *) R_Calloc(*nt, int);
 
     // total amount of positive outcomes
     for(int i = 0; i < *nt; i++) {
@@ -58,7 +58,7 @@ extern "C" {
       sens[i] = sensMean / positives;
       spec[i] = specMean / (*nt - positives);
     }
-    Free(pred);
+    R_Free(pred);
   }
 
 } // extern "C"
